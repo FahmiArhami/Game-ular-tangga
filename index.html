@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Informatika Snakes & Ladders — Game edukasi ular tangga multiplayer untuk pembelajaran Informatika SMP kelas 8-9." />
+  <meta name="color-scheme" content="light">
+  <title>Informatika Snakes &amp; Ladders</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- Tombol audio global -->
+<button id="btn-audio" class="btn-audio-float" title="Toggle suara" aria-label="Toggle suara">
+  <!-- Speaker pixel SVG -->
+  <svg class="audio-icon" viewBox="0 0 16 16" width="20" height="20" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <rect x="1" y="5"  width="3" height="6" fill="currentColor"/>
+    <rect x="4" y="4"  width="2" height="8" fill="currentColor"/>
+    <rect x="6" y="2"  width="2" height="4" fill="currentColor"/>
+    <rect x="6" y="10" width="2" height="4" fill="currentColor"/>
+    <rect x="8" y="1"  width="2" height="2" fill="currentColor"/>
+    <rect x="8" y="13" width="2" height="2" fill="currentColor"/>
+    <rect x="10" y="3" width="2" height="10" fill="currentColor"/>
+    <rect x="12" y="5" width="2" height="6" fill="currentColor"/>
+  </svg>
+</button>
+
+<!-- Toast container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- Canvas confetti -->
+<canvas id="confetti-canvas"></canvas>
+
+
+<!-- ============================================================
+  PAGE 1 — MENU UTAMA
+  ============================================================ -->
+<section id="page-menu" class="page active" role="main">
+
+  <!-- ===== LATAR LANGIT + ELEMEN DEKORASI ===== -->
+  <div class="menu-sky" aria-hidden="true">
+
+    <!-- Matahari pixel -->
+    <div class="menu-sun"></div>
+
+    <!-- Awan bergerak pixel (3 buah) -->
+    <div class="menu-cloud menu-cloud-1">
+      <svg viewBox="0 0 48 20" width="96" height="40" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <rect x="8"  y="12" width="32" height="8"  fill="#fff8e7"/>
+        <rect x="4"  y="8"  width="16" height="12" fill="#fff8e7"/>
+        <rect x="16" y="4"  width="16" height="16" fill="#fff8e7"/>
+        <rect x="28" y="8"  width="12" height="12" fill="#fff8e7"/>
+      </svg>
+    </div>
+    <div class="menu-cloud menu-cloud-2">
+      <svg viewBox="0 0 56 20" width="112" height="40" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <rect x="12" y="12" width="32" height="8"  fill="#fff8e7"/>
+        <rect x="6"  y="8"  width="16" height="12" fill="#fff8e7"/>
+        <rect x="20" y="4"  width="20" height="16" fill="#fff8e7"/>
+        <rect x="36" y="8"  width="12" height="12" fill="#fff8e7"/>
+      </svg>
+    </div>
+    <div class="menu-cloud menu-cloud-3">
+      <svg viewBox="0 0 40 16" width="80" height="32" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <rect x="4"  y="8"  width="32" height="8" fill="#fff8e7"/>
+        <rect x="8"  y="4"  width="12" height="12" fill="#fff8e7"/>
+        <rect x="20" y="2"  width="12" height="14" fill="#fff8e7"/>
+      </svg>
+    </div>
+
+    <!-- Laut -->
+    <div class="menu-sea"></div>
+
+    <!-- Daratan penuh selebar layar -->
+    <div class="menu-ground" aria-hidden="true">
+      <!-- Pohon kelapa kiri -->
+      <img class="menu-ground-palm menu-ground-palm-l"
+           src="assets/img/palm.png"
+           alt="" aria-hidden="true"
+           width="100" height="104">
+      <!-- Pohon kelapa kanan -->
+      <img class="menu-ground-palm menu-ground-palm-r"
+           src="assets/img/palm_2.png"
+           alt="" aria-hidden="true"
+           width="100" height="104">
+      <!-- Bunga pink (kiri) -->
+      <svg class="menu-ground-flowers menu-ground-flowers-l"
+           viewBox="0 0 48 28" width="48" height="28"
+           xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- bunga 1 -->
+        <rect x="4"  y="20" width="4" height="8"  fill="#8be37f"/>
+        <rect x="2"  y="16" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="6"  y="14" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="4"  y="12" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="8"  y="16" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="2"  y="15" width="11" height="2" fill="#2b2d42"/>
+        <rect x="2"  y="20" width="11" height="2" fill="#2b2d42"/>
+        <!-- bunga 2 -->
+        <rect x="32" y="22" width="4" height="6"  fill="#8be37f"/>
+        <rect x="30" y="18" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="34" y="16" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="32" y="14" width="4" height="4"  fill="#ff9f45"/>
+        <rect x="38" y="18" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="30" y="17" width="13" height="2" fill="#2b2d42"/>
+        <rect x="30" y="22" width="13" height="2" fill="#2b2d42"/>
+      </svg>
+      <!-- Bunga kuning (kanan) -->
+      <svg class="menu-ground-flowers menu-ground-flowers-r"
+           viewBox="0 0 48 28" width="48" height="28"
+           xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- bunga 1 -->
+        <rect x="8"  y="22" width="4" height="6"  fill="#8be37f"/>
+        <rect x="6"  y="18" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="10" y="16" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="8"  y="14" width="4" height="4"  fill="#ff9f45"/>
+        <rect x="14" y="18" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="6"  y="17" width="13" height="2" fill="#2b2d42"/>
+        <rect x="6"  y="22" width="13" height="2" fill="#2b2d42"/>
+        <!-- bunga 2 -->
+        <rect x="34" y="20" width="4" height="8"  fill="#8be37f"/>
+        <rect x="32" y="16" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="36" y="14" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="34" y="12" width="4" height="4"  fill="#ffd93d"/>
+        <rect x="40" y="16" width="4" height="4"  fill="#ff6b9d"/>
+        <rect x="32" y="15" width="11" height="2" fill="#2b2d42"/>
+        <rect x="32" y="20" width="11" height="2" fill="#2b2d42"/>
+      </svg>
+    </div>
+
+  </div><!-- /menu-sky -->
+
+  <!-- ===== KONTEN MENU ===== -->
+  <div class="menu-container">
+
+    <!-- Maskot Bug lucu pixel -->
+    <div class="menu-mascot" aria-label="Maskot Bug lucu" aria-hidden="true">
+      <svg viewBox="0 0 80 64" width="140" height="112" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+        <!-- Antena kiri -->
+        <rect x="22" y="0"  width="4" height="4"  fill="#2b2d42"/>
+        <rect x="20" y="4"  width="4" height="4"  fill="#2b2d42"/>
+        <rect x="18" y="8"  width="4" height="4"  fill="#2b2d42"/>
+        <!-- Antena kanan -->
+        <rect x="54" y="0"  width="4" height="4"  fill="#2b2d42"/>
+        <rect x="56" y="4"  width="4" height="4"  fill="#2b2d42"/>
+        <rect x="58" y="8"  width="4" height="4"  fill="#2b2d42"/>
+        <!-- Bola antena -->
+        <rect x="16" y="10" width="8" height="8"  fill="#ff6b9d"/>
+        <rect x="56" y="10" width="8" height="8"  fill="#ff6b9d"/>
+        <!-- Outline kepala + telinga -->
+        <rect x="12" y="14" width="56" height="2"  fill="#2b2d42"/>
+        <rect x="12" y="44" width="56" height="2"  fill="#2b2d42"/>
+        <rect x="10" y="16" width="4"  height="2"  fill="#2b2d42"/>
+        <rect x="66" y="16" width="4"  height="2"  fill="#2b2d42"/>
+        <rect x="10" y="34" width="4"  height="2"  fill="#2b2d42"/>
+        <rect x="66" y="34" width="4"  height="2"  fill="#2b2d42"/>
+        <rect x="10" y="16" width="2"  height="18" fill="#2b2d42"/>
+        <rect x="68" y="16" width="2"  height="18" fill="#2b2d42"/>
+        <rect x="14" y="14" width="2"  height="32" fill="#2b2d42"/>
+        <rect x="64" y="14" width="2"  height="32" fill="#2b2d42"/>
+        <!-- Kepala -->
+        <rect x="16" y="14" width="48" height="32" fill="#8be37f"/>
+        <!-- Telinga/pipi -->
+        <rect x="12" y="18" width="6"  height="16" fill="#8be37f"/>
+        <rect x="62" y="18" width="6"  height="16" fill="#8be37f"/>
+        <!-- Mata kiri (besar) -->
+        <rect x="20" y="18" width="16" height="16" fill="#fff8e7"/>
+        <rect x="24" y="22" width="8"  height="8"  fill="#2b2d42"/>
+        <rect x="26" y="24" width="4"  height="4"  fill="#2b2d42"/>
+        <rect x="24" y="22" width="4"  height="4"  fill="#2b2d42"/>
+        <!-- Kilap mata kiri -->
+        <rect x="28" y="22" width="4" height="4"   fill="#fff8e7"/>
+        <!-- Mata kanan (besar) -->
+        <rect x="44" y="18" width="16" height="16" fill="#fff8e7"/>
+        <rect x="48" y="22" width="8"  height="8"  fill="#2b2d42"/>
+        <rect x="50" y="24" width="4"  height="4"  fill="#2b2d42"/>
+        <rect x="48" y="22" width="4"  height="4"  fill="#2b2d42"/>
+        <!-- Kilap mata kanan -->
+        <rect x="52" y="22" width="4" height="4"   fill="#fff8e7"/>
+        <!-- Hidung -->
+        <rect x="36" y="28" width="8" height="4"   fill="#5dbb63"/>
+        <!-- Mulut senyum -->
+        <rect x="24" y="36" width="4"  height="4"  fill="#2b2d42"/>
+        <rect x="28" y="40" width="4"  height="4"  fill="#2b2d42"/>
+        <rect x="32" y="42" width="12" height="4"  fill="#2b2d42"/>
+        <rect x="44" y="40" width="4"  height="4"  fill="#2b2d42"/>
+        <rect x="48" y="36" width="4"  height="4"  fill="#2b2d42"/>
+        <!-- Pipi merah muda -->
+        <rect x="14" y="30" width="6" height="6"   fill="#ff9f45"/>
+        <rect x="60" y="30" width="6" height="6"   fill="#ff9f45"/>
+        <!-- Badan: outline gelap dulu, lalu isi -->
+        <rect x="26" y="44" width="34" height="2"  fill="#2b2d42"/>
+        <rect x="30" y="58" width="26" height="2"  fill="#2b2d42"/>
+        <rect x="26" y="44" width="2"  height="12" fill="#2b2d42"/>
+        <rect x="60" y="44" width="2"  height="10" fill="#2b2d42"/>
+        <rect x="36" y="54" width="2"  height="8"  fill="#2b2d42"/>
+        <rect x="28" y="46" width="32" height="8"  fill="#5dbb63"/>
+        <rect x="32" y="52" width="28" height="8"  fill="#5dbb63"/>
+        <rect x="38" y="56" width="22" height="8"  fill="#8be37f"/>
+        <!-- Ekor -->
+        <rect x="54" y="60" width="8"  height="4"  fill="#8be37f"/>
+        <rect x="58" y="56" width="8"  height="4"  fill="#5dbb63"/>
+        <rect x="62" y="54" width="2"  height="2"  fill="#2b2d42"/>
+        <rect x="62" y="60" width="2"  height="2"  fill="#2b2d42"/>
+      </svg>
+    </div>
+
+    <!-- Logo & judul -->
+    <div class="menu-logo">
+      <h1 class="menu-title">Petualangan di<br>Pulau Informatika</h1>
+      <p class="menu-subtitle">Belajar Informatika sambil berpetualang!</p>
+    </div>
+
+    <!-- Statistik HUD papan kayu -->
+    <div class="menu-stats">
+      <div class="menu-stat-badge"><span>150+</span>Soal</div>
+      <div class="menu-stat-badge"><span>9</span>Kategori</div>
+      <div class="menu-stat-badge"><span id="stat-powerup-count">15</span>Power-Up</div>
+      <div class="menu-stat-badge"><span>1-6</span>Pemain</div>
+    </div>
+
+    <!-- Tombol menu -->
+    <nav class="menu-buttons" aria-label="Menu utama">
+      <button id="btn-start" class="btn btn-menu-start btn-lg">MULAI PERMAINAN</button>
+      <button id="btn-howto" class="btn btn-menu-howto btn-lg">CARA BERMAIN</button>
+      <button id="btn-bank" class="btn btn-menu-bank btn-lg">KISI-KISI MATERI</button>
+    </nav>
+
+    <!-- Plakat pembuat -->
+    <div class="menu-dev-plaque" aria-label="Credit pembuat game">
+      <!-- Monogram FA pixel SVG 24x24 -->
+      <svg class="plaque-monogram" viewBox="0 0 24 24" width="36" height="36"
+           xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"
+           aria-hidden="true">
+        <!-- Latar kotak kuning -->
+        <rect x="0" y="0" width="24" height="24" fill="#ffd93d"/>
+        <!-- Outline kotak tipis 1px -->
+        <rect x="0" y="0"  width="24" height="1"  fill="#2b2d42"/>
+        <rect x="0" y="23" width="24" height="1"  fill="#2b2d42"/>
+        <rect x="0" y="0"  width="1"  height="24" fill="#2b2d42"/>
+        <rect x="23" y="0" width="1"  height="24" fill="#2b2d42"/>
+
+        <!-- Huruf F — ramping, stroke 1px, di zona x:2–10 -->
+        <!-- Batang kiri vertikal -->
+        <rect x="2"  y="2"  width="1" height="20" fill="#2b2d42"/>
+        <rect x="3"  y="2"  width="1" height="20" fill="#fff8e7"/>
+        <rect x="4"  y="2"  width="1" height="20" fill="#2b2d42"/>
+        <!-- Bar atas horizontal -->
+        <rect x="4"  y="2"  width="7"  height="1" fill="#2b2d42"/>
+        <rect x="4"  y="3"  width="6"  height="1" fill="#fff8e7"/>
+        <rect x="4"  y="4"  width="7"  height="1" fill="#2b2d42"/>
+        <!-- Bar tengah horizontal -->
+        <rect x="4"  y="11" width="6"  height="1" fill="#2b2d42"/>
+        <rect x="4"  y="12" width="5"  height="1" fill="#fff8e7"/>
+        <rect x="4"  y="13" width="6"  height="1" fill="#2b2d42"/>
+
+        <!-- Huruf A — ramping, stroke 1px, di zona x:13–22 -->
+        <!-- Kaki kiri vertikal -->
+        <rect x="13" y="7"  width="1" height="15" fill="#2b2d42"/>
+        <rect x="14" y="7"  width="1" height="15" fill="#fff8e7"/>
+        <rect x="15" y="7"  width="1" height="15" fill="#2b2d42"/>
+        <!-- Kaki kanan vertikal -->
+        <rect x="19" y="7"  width="1" height="15" fill="#2b2d42"/>
+        <rect x="20" y="7"  width="1" height="15" fill="#fff8e7"/>
+        <rect x="21" y="7"  width="1" height="15" fill="#2b2d42"/>
+        <!-- Puncak (atap segitiga → persegi panjang kecil) -->
+        <rect x="14" y="2"  width="8"  height="1" fill="#2b2d42"/>
+        <rect x="14" y="3"  width="8"  height="1" fill="#fff8e7"/>
+        <rect x="14" y="4"  width="8"  height="1" fill="#2b2d42"/>
+        <!-- Sisi kiri puncak miring (pixel steps) -->
+        <rect x="13" y="5"  width="1"  height="2" fill="#2b2d42"/>
+        <rect x="14" y="5"  width="1"  height="2" fill="#fff8e7"/>
+        <!-- Sisi kanan puncak miring -->
+        <rect x="21" y="5"  width="1"  height="2" fill="#2b2d42"/>
+        <rect x="20" y="5"  width="1"  height="2" fill="#fff8e7"/>
+        <!-- Bar tengah horizontal -->
+        <rect x="14" y="14" width="8"  height="1" fill="#2b2d42"/>
+        <rect x="14" y="15" width="7"  height="1" fill="#fff8e7"/>
+        <rect x="14" y="16" width="8"  height="1" fill="#2b2d42"/>
+      </svg>
+      <!-- Teks dua baris -->
+      <div class="plaque-text">
+        <span class="plaque-label">DIBUAT OLEH</span>
+        <span class="plaque-name">Fahmi Arhami Hamdi</span>
+      </div>
+      <!-- Lapisan kilau diagonal -->
+      <span class="plaque-shine" aria-hidden="true"></span>
+    </div>
+
+    <!-- Credit musik -->
+    <p class="menu-music-credit">Musik: Game Level Pixel Quest Loop (alex-morgan) dan Chiptune Video Game Games Music (Tatamusic), via Pixabay</p>
+
+  </div><!-- /menu-container -->
+
+</section>
+
+
+<!-- ============================================================
+  PAGE 2 — PENGATURAN PEMAIN
+  ============================================================ -->
+<section id="page-setup" class="page" role="main">
+  <div class="setup-container">
+
+    <header class="page-header">
+      <button class="btn btn-secondary btn-sm btn-back-menu" aria-label="Kembali ke menu">&larr; Kembali</button>
+      <h2>Pengaturan Pemain</h2>
+    </header>
+
+    <div class="card">
+      <p class="section-title">Jumlah Pemain</p>
+      <div class="player-count-group" role="group" aria-label="Pilih jumlah pemain">
+        <button class="player-count-btn" data-count="1" aria-pressed="false">
+          1 <small>Pemain</small>
+        </button>
+        <button class="player-count-btn active" data-count="2" aria-pressed="true">
+          2 <small>Pemain</small>
+        </button>
+        <button class="player-count-btn" data-count="3" aria-pressed="false">
+          3 <small>Pemain</small>
+        </button>
+        <button class="player-count-btn" data-count="4" aria-pressed="false">
+          4 <small>Pemain</small>
+        </button>
+        <button class="player-count-btn" data-count="5" aria-pressed="false">
+          5 <small>Pemain</small>
+        </button>
+        <button class="player-count-btn" data-count="6" aria-pressed="false">
+          6 <small>Pemain</small>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Nama Pemain</p>
+      <form id="player-setup-form" autocomplete="off" onsubmit="return false;">
+        <!-- Diisi oleh UIManager.buildSetupForm() -->
+      </form>
+    </div>
+
+    <button id="btn-start-game" class="btn btn-success btn-lg">MULAI GAME!</button>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+  PAGE 3 — CARA BERMAIN
+  ============================================================ -->
+<section id="page-howto" class="page" role="main">
+  <div class="howto-container">
+
+    <header class="page-header">
+      <button class="btn btn-secondary btn-sm btn-back-menu" aria-label="Kembali ke menu">&larr; Kembali</button>
+      <h2>Cara Bermain</h2>
+    </header>
+
+    <div class="card">
+      <p class="section-title">Alur Permainan</p>
+
+      <div class="howto-step">
+        <div class="howto-step-num">1</div>
+        <div class="howto-step-content">
+          <h3>Lempar Dadu</h3>
+          <p>Klik tombol <strong>LEMPAR DADU</strong> untuk menghasilkan angka 1&ndash;6. Bidakmu akan bergerak sesuai angka yang keluar.</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">2</div>
+        <div class="howto-step-content">
+          <h3>Jawab Soal</h3>
+          <p>Sebagian besar petak berisi soal Informatika. Jawab dengan benar untuk mendapat poin bonus, salah maka poin berkurang. Kamu punya <strong>25 detik</strong> untuk menjawab!</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">3</div>
+        <div class="howto-step-content">
+          <h3>Manfaatkan Tangga</h3>
+          <p>Jika berhenti di petak tangga, kamu akan <strong>naik</strong> ke petak yang lebih tinggi. Kesempatan emas untuk maju!</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">4</div>
+        <div class="howto-step-content">
+          <h3>Hindari Ular</h3>
+          <p>Jika berhenti di kepala ular, kamu akan <strong>turun</strong> ke petak yang lebih rendah. Hati-hati!</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">5</div>
+        <div class="howto-step-content">
+          <h3>Kumpulkan Power-Up</h3>
+          <p>Berhenti di petak hadiah untuk mendapat power-up acak. Gunakan secara strategis sebelum melempar dadu!</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">6</div>
+        <div class="howto-step-content">
+          <h3>Hadapi Challenge</h3>
+          <p>Petak Challenge berisi soal SULIT dengan reward lebih besar. Berani mencoba?</p>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="howto-step-num">7</div>
+        <div class="howto-step-content">
+          <h3>Mencapai Finish</h3>
+          <p>Pemain pertama yang mencapai atau melewati petak <strong>64 (FINISH)</strong> mendapat <strong>bonus +30 poin</strong> dan dicatat sebagai <em>Finish Pertama</em>. Game belum langsung berakhir &mdash; semua pemain menyelesaikan ronde yang sedang berjalan agar tiap pemain mendapat jumlah giliran yang sama. Setelah ronde selesai, <strong>pemenang adalah pemain dengan total poin tertinggi</strong>.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Legenda Petak</p>
+      <div class="howto-legend">
+        <div class="legend-item"><span class="legend-icon legend-icon-question"></span> Soal Biasa</div>
+        <div class="legend-item legend-bg-challenge"><span class="legend-icon challenge-icon"></span> Challenge</div>
+        <div class="legend-item"><span class="legend-icon powerup-icon"></span> Power-Up</div>
+        <div class="legend-item"><span class="legend-icon bonus-icon"></span> Bonus Poin</div>
+        <div class="legend-item legend-bg-trap"><span class="legend-icon trap-icon"></span> Jebakan</div>
+        <div class="legend-item"><span class="legend-icon ladder-icon"></span> Tangga (Naik)</div>
+        <div class="legend-item"><span class="legend-icon snake-icon"></span> Ular (Turun)</div>
+        <div class="legend-item legend-bg-finish"><span class="legend-icon finish-icon"></span> FINISH</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Sistem Poin</p>
+      <div class="howto-legend">
+        <div class="legend-item">Mudah: +5 poin</div>
+        <div class="legend-item">Sedang: +10 poin</div>
+        <div class="legend-item">Sulit: +15 poin</div>
+        <div class="legend-item">Salah: -5 poin</div>
+        <div class="legend-item">Bonus: +20 poin</div>
+        <div class="legend-item">Timeout: -5 poin</div>
+        <div class="legend-item">Finish pertama: +30 poin</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-title">Daftar Power-Up</p>
+      <!-- Diisi otomatis dari POWERUP_CONFIG oleh script.js -->
+      <div id="howto-pu-list" class="howto-pu-grid" aria-label="Daftar semua power-up"></div>
+    </div>
+
+    <button class="btn btn-primary btn-lg btn-back-menu">Mengerti, Mulai!</button>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+  PAGE 4 — GAME BOARD
+  ============================================================ -->
+<section id="page-game" class="page" role="main" aria-label="Papan permainan">
+
+  <header class="game-header">
+    <button id="btn-exit-game" class="btn-exit-game" title="Keluar dari permainan">&#x2190; Keluar</button>
+    <span class="game-header-title">
+      <span class="game-header-title-full">Petualangan di Pulau Informatika</span>
+      <span class="game-header-title-short">Pulau Informatika</span>
+    </span>
+    <div class="game-header-right">
+      <span id="turn-counter">Ronde 1</span>
+    </div>
+  </header>
+
+  <div class="game-layout">
+
+    <!-- Papan permainan -->
+    <main class="board-area" aria-label="Papan ular tangga">
+      <div id="game-board" role="grid" aria-label="Papan permainan 64 petak"></div>
+    </main>
+
+    <!-- Panel kanan -->
+    <aside class="side-panel" aria-label="Panel permainan">
+
+      <!-- Giliran -->
+      <div class="current-turn-box">
+        <p class="turn-label">Giliran Sekarang</p>
+        <span id="current-player-avatar" class="turn-avatar">&#x1F98A;</span>
+        <p id="current-player-name" class="turn-name">Pemain</p>
+      </div>
+
+      <!-- Dadu — diisi JS via innerHTML dengan diceHTML() -->
+      <div class="dice-area">
+        <div id="dice-display" class="dice-pixel" aria-live="polite" aria-label="Nilai dadu">
+          <!-- Default: dadu sisi 1 — JS akan ganti dengan diceHTML() -->
+        </div>
+        <div class="dice-buttons">
+          <button id="btn-roll-dice" class="btn btn-roll">LEMPAR DADU</button>
+          <button id="btn-use-powerup" class="btn btn-powerup" disabled>Gunakan Power-Up</button>
+        </div>
+      </div>
+
+      <!-- Daftar pemain -->
+      <div class="player-list-area" aria-label="Daftar pemain">
+        <div id="player-list"></div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Log tersembunyi — dipertahankan agar script.js tidak error, tapi tidak ditampilkan -->
+  <div id="game-log" style="display:none;" aria-hidden="true"></div>
+</section>
+
+
+<!-- ============================================================
+  PAGE 5 — HASIL
+  ============================================================ -->
+<section id="page-result" class="page" role="main">
+  <div class="result-container">
+
+    <div class="result-winner-card">
+      <span class="result-trophy" id="result-winner-avatar" aria-hidden="true"></span>
+      <p class="result-win-label">PEMENANG!</p>
+      <p class="result-win-name" id="result-winner-name">---</p>
+    </div>
+
+    <div class="card">
+      <p class="section-heading">Peringkat Akhir</p>
+      <div id="result-rankings"></div>
+    </div>
+
+    <div class="card">
+      <p class="section-heading">Statistik Permainan</p>
+      <div id="result-stats"></div>
+    </div>
+
+    <div class="result-actions">
+      <button id="btn-play-again" class="btn btn-primary btn-lg">MAIN LAGI</button>
+      <button id="btn-back-menu-result" class="btn btn-secondary btn-lg">MENU UTAMA</button>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+  PAGE 6 — KISI-KISI MATERI (murid) / BANK SOAL GURU (?guru=1)
+  Judul, ringkasan, dan fitur edit ditampilkan sesuai mode.
+  ============================================================ -->
+<section id="page-bank" class="page" role="main">
+  <div class="bank-container">
+
+    <header class="page-header">
+      <button class="btn btn-secondary btn-sm btn-back-menu" aria-label="Kembali ke menu">&larr; Kembali</button>
+      <!-- Judul berganti tergantung mode; JS yang mengisi -->
+      <h2 id="bank-page-title">Kisi-kisi Materi</h2>
+    </header>
+
+    <!-- Pesan murid (disembunyikan di mode guru) -->
+    <p id="bank-student-msg" class="bank-student-msg">
+      <svg class="kisi-icon-book" viewBox="0 0 16 16" width="20" height="20"
+           xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"
+           aria-hidden="true" focusable="false">
+        <!-- Punggung buku -->
+        <rect x="0" y="1" width="3" height="14" fill="#3a1a8a"/>
+        <rect x="0" y="1" width="3" height="14" fill="#3a1a8a"/>
+        <!-- Cover buku -->
+        <rect x="3" y="1" width="10" height="14" fill="#9b7bff"/>
+        <!-- Halaman dalam -->
+        <rect x="5" y="3" width="6" height="10" fill="#fff8e7"/>
+        <!-- Garis teks simulasi -->
+        <rect x="6" y="5"  width="4" height="1" fill="#94b0c2"/>
+        <rect x="6" y="7"  width="4" height="1" fill="#94b0c2"/>
+        <rect x="6" y="9"  width="3" height="1" fill="#94b0c2"/>
+        <rect x="6" y="11" width="4" height="1" fill="#94b0c2"/>
+        <!-- Outline -->
+        <rect x="0" y="0"  width="13" height="1"  fill="#2b2d42"/>
+        <rect x="0" y="15" width="13" height="1"  fill="#2b2d42"/>
+        <rect x="0" y="0"  width="1"  height="16" fill="#2b2d42"/>
+        <rect x="13" y="0" width="1"  height="16" fill="#2b2d42"/>
+        <!-- Spine highlight -->
+        <rect x="3" y="1" width="1" height="14" fill="#2b2d42"/>
+      </svg>
+      Gunakan daftar ini untuk belajar sebelum bermain. Jawabannya cari sendiri ya!
+    </p>
+
+    <!-- Ringkasan statistik (hanya mode murid) -->
+    <div id="bank-summary" class="bank-summary" aria-label="Ringkasan soal"></div>
+
+    <div class="bank-toolbar">
+      <input type="text" id="bank-search" placeholder="Cari soal..." aria-label="Cari soal" />
+
+      <select id="bank-filter-cat" aria-label="Filter kategori">
+        <option value="">Semua Kategori</option>
+      </select>
+
+      <select id="bank-filter-diff" aria-label="Filter kesulitan">
+        <option value="">Semua Kesulitan</option>
+        <option value="easy">Mudah</option>
+        <option value="medium">Sedang</option>
+        <option value="hard">Sulit</option>
+      </select>
+
+      <select id="bank-filter-type" aria-label="Filter tipe soal">
+        <option value="">Semua Tipe</option>
+        <option value="multiple-choice">Pilihan Ganda</option>
+        <option value="true-false">Benar/Salah</option>
+        <option value="multi-select">Pilih Lebih dari Satu</option>
+        <option value="situation">Soal Situasi</option>
+        <option value="ordering">Urutkan</option>
+        <option value="concept-guess">Tebak Konsep</option>
+      </select>
+
+      <!-- Tombol Tambah Soal — hanya mode guru -->
+      <button id="btn-add-question" class="btn btn-success btn-sm">+ Tambah Soal</button>
+    </div>
+
+    <div class="bank-stats-row">
+      <span id="bank-total">Total: 0 soal</span>
+      <!-- Teks "Data tersimpan" — hanya mode guru -->
+      <span id="bank-guru-storage-note" style="display:none;">|</span>
+      <span id="bank-guru-storage-text" style="display:none;">Data tersimpan di browser (sesi ini)</span>
+    </div>
+
+    <p class="bank-scroll-hint" aria-hidden="true">← Geser ke samping untuk melihat semua kolom →</p>
+
+    <!-- Tampilan TABEL (mode guru) -->
+    <div class="table-wrapper" id="bank-table-wrapper">
+      <table class="bank-table" aria-label="Daftar soal">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Kategori</th>
+            <th>Kesulitan</th>
+            <th>Tipe</th>
+            <th>Pertanyaan</th>
+            <th class="bank-col-aksi" id="bank-th-aksi">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="bank-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Tampilan KARTU (mode murid, responsif HP) -->
+    <div id="bank-cards" class="bank-cards" aria-label="Daftar soal"></div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+  MODAL: SOAL
+  ============================================================ -->
+<div id="question-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Soal Informatika">
+  <div class="modal-box">
+
+    <div class="q-header">
+      <span id="q-avatar" class="q-player-avatar">&#x1F98A;</span>
+      <div>
+        <p class="q-player-name" id="q-player">Pemain</p>
+        <p style="font-family:'VT323',monospace;font-size:1rem;color:#94b0c2;">giliran menjawab soal</p>
+      </div>
+    </div>
+
+    <div class="q-meta">
+      <span class="badge" id="q-category">Kategori</span>
+      <span class="badge" id="q-difficulty">Kesulitan</span>
+      <span class="badge" id="q-type">Tipe</span>
+    </div>
+
+    <p class="q-title-label">PERTANYAAN</p>
+    <p class="q-text" id="q-text"></p>
+
+    <div class="timer-container" aria-label="Sisa waktu">
+      <span class="timer-number" id="question-timer" aria-live="polite">25</span>
+      <div class="timer-track">
+        <div class="timer-fill" id="timer-bar" style="width:100%"></div>
+      </div>
+    </div>
+
+    <div id="q-answer-area" aria-label="Pilihan jawaban"></div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: FEEDBACK
+  ============================================================ -->
+<div id="feedback-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Hasil jawaban">
+  <div class="modal-box fb-center">
+    <span class="fb-icon-big correct-char" id="fb-icon" aria-hidden="true"></span>
+    <h2 class="fb-title correct" id="fb-title">BENAR!</h2>
+    <p class="fb-points positive" id="fb-points">+10 Poin</p>
+    <p class="fb-correct-ans" id="fb-correct-ans" style="display:none;"></p>
+    <div class="fb-explanation" id="fb-explanation"></div>
+    <button id="fb-next-btn" class="btn btn-primary btn-lg" style="width:100%;">Lanjut</button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: EFEK
+  ============================================================ -->
+<div id="effect-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Efek permainan">
+  <div class="modal-box effect-center">
+    <span class="effect-icon-big" id="effect-icon">&#x2728;</span>
+    <h2 class="effect-title" id="effect-title">EFEK!</h2>
+    <p class="effect-message" id="effect-message"></p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: POWER-UP
+  ============================================================ -->
+<div id="powerup-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Pilih power-up">
+  <div class="modal-box">
+
+    <h2 class="modal-title">Gunakan Power-Up</h2>
+
+    <div class="pu-header">
+      <span class="pu-avatar" id="pu-player-avatar">&#x1F98A;</span>
+      <div>
+        <p style="font-weight:800;" id="pu-player-name">Pemain</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);">Pilih power-up yang ingin digunakan</p>
+      </div>
+    </div>
+
+    <div id="pu-list" aria-label="Daftar power-up"></div>
+
+    <button id="pu-close-btn" class="btn btn-secondary" style="width:100%;">Tutup</button>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: DOUBLE DICE
+  ============================================================ -->
+<div id="double-dice-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Pilih hasil dadu">
+  <div class="modal-box fb-center">
+
+    <h2 class="modal-title">DOUBLE DICE!</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:0.5rem;">Pilih angka yang ingin kamu gunakan:</p>
+
+    <div class="dd-choices">
+      <div class="dd-choice">
+        <span class="dd-dice-face" id="dd-roll1"></span>
+        <span class="dd-val" id="dd-val1">1</span>
+        <button class="dd-pick-btn" id="dd-pick1">Pilih ini</button>
+      </div>
+      <div class="dd-choice">
+        <span class="dd-dice-face" id="dd-roll2"></span>
+        <span class="dd-val" id="dd-val2">2</span>
+        <button class="dd-pick-btn" id="dd-pick2">Pilih ini</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: TARGET
+  ============================================================ -->
+<div id="target-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Pilih pemain target">
+  <div class="modal-box">
+
+    <h2 class="modal-title" id="target-title">Pilih Target</h2>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-bottom:0.5rem;">Pilih pemain yang ingin kamu targetkan:</p>
+
+    <div id="target-list" aria-label="Daftar pemain target"></div>
+
+    <button id="target-cancel" class="btn btn-secondary" style="width:100%;margin-top:0.5rem;">Batal</button>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: TAMBAH / EDIT SOAL
+  ============================================================ -->
+<div id="add-q-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Form tambah soal">
+  <div class="modal-box">
+
+    <h2 class="modal-title" id="aq-modal-title">Tambah Soal Baru</h2>
+
+    <input type="hidden" id="aq-id" />
+
+    <div class="form-group">
+      <label for="aq-category">Kategori</label>
+      <input type="text" id="aq-category" placeholder="contoh: Jaringan Komputer" list="category-list" />
+      <datalist id="category-list">
+        <option value="Berpikir Komputasional">
+        <option value="Algoritma dan Pemrograman">
+        <option value="Sistem Komputer">
+        <option value="Jaringan Komputer">
+        <option value="Internet dan Keamanan Digital">
+        <option value="Analisis Data">
+        <option value="Dampak Sosial Informatika">
+        <option value="Representasi Data">
+        <option value="AI dan Teknologi Modern">
+      </datalist>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-difficulty">Tingkat Kesulitan</label>
+      <select id="aq-difficulty">
+        <option value="easy">Mudah (+5 poin)</option>
+        <option value="medium" selected>Sedang (+10 poin)</option>
+        <option value="hard">Sulit (+15 poin)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-type">Tipe Soal</label>
+      <select id="aq-type">
+        <option value="multiple-choice">Pilihan Ganda (answer: index 0-3)</option>
+        <option value="true-false">Benar / Salah (answer: 0=Benar, 1=Salah)</option>
+        <option value="multi-select">Pilih Lebih dari Satu (answer: [0,1,2,...])</option>
+        <option value="situation">Soal Situasi (answer: index pilihan benar)</option>
+        <option value="ordering">Urutkan (answer: [urutan index item])</option>
+        <option value="concept-guess">Tebak Konsep (answer: "jawaban teks")</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-question">Pertanyaan</label>
+      <textarea id="aq-question" rows="3" placeholder="Tulis pertanyaan di sini..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-options-raw">Pilihan Jawaban (JSON Array, skip jika concept-guess)</label>
+      <textarea id="aq-options-raw" rows="2" placeholder='["Opsi A","Opsi B","Opsi C","Opsi D"]'></textarea>
+      <span class="form-hint">Format: ["Pilihan 1","Pilihan 2","Pilihan 3","Pilihan 4"]</span>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-answer-raw">Jawaban (JSON)</label>
+      <input type="text" id="aq-answer-raw" placeholder='0 atau [0,2] atau "teks jawaban"' />
+      <span class="form-hint">
+        MC/TF/Situasi: angka index (0=A, 1=B, dst.) |
+        Multi-select: [0,2] |
+        Ordering: [0,1,2,3] |
+        Concept: "jawaban"
+      </span>
+    </div>
+
+    <div class="form-group">
+      <label for="aq-explanation">Penjelasan</label>
+      <textarea id="aq-explanation" rows="2" placeholder="Penjelasan singkat mengapa jawaban tersebut benar..."></textarea>
+    </div>
+
+    <div class="form-group" id="aq-accepted-group" style="display:none;">
+      <label for="aq-accepted-raw">Jawaban Alternatif <small style="font-weight:normal;color:var(--text-muted)">(hanya concept-guess — pisahkan dengan koma)</small></label>
+      <input type="text" id="aq-accepted-raw" placeholder='hoax, berita hoaks, disinformasi' />
+      <span class="form-hint">Kosongkan jika tidak ada alternatif. Normalisasi otomatis diterapkan saat penilaian.</span>
+    </div>
+
+    <div class="modal-actions">
+      <button id="aq-cancel-btn" class="btn btn-secondary">Batal</button>
+      <button id="aq-save-btn" class="btn btn-success">Simpan Soal</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ============================================================
+  MODAL: KONFIRMASI KELUAR
+  ============================================================ -->
+<div id="exit-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Konfirmasi keluar">
+  <div class="modal-box exit-modal-box fb-center">
+    <!-- Ikon pintu pixel SVG -->
+    <svg viewBox="0 0 32 40" width="64" height="80" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" style="display:block;margin:0 auto 0.6rem;image-rendering:pixelated">
+      <rect x="4"  y="0"  width="24" height="36" fill="#a0673c"/>
+      <rect x="6"  y="2"  width="20" height="32" fill="#d9a066"/>
+      <rect x="4"  y="0"  width="2"  height="36" fill="#2b2d42"/>
+      <rect x="26" y="0"  width="2"  height="36" fill="#2b2d42"/>
+      <rect x="4"  y="0"  width="24" height="2"  fill="#2b2d42"/>
+      <rect x="4"  y="34" width="24" height="2"  fill="#2b2d42"/>
+      <rect x="0"  y="34" width="32" height="6"  fill="#a0673c"/>
+      <rect x="0"  y="40" width="32" height="2"  fill="#2b2d42"/>
+      <!-- Gagang pintu -->
+      <rect x="22" y="16" width="3"  height="5"  fill="#ffd93d"/>
+    </svg>
+    <h2 class="exit-modal-title">Keluar dari Permainan?</h2>
+    <p class="exit-modal-msg">Progres permainan akan hilang dan kamu kembali ke menu utama.</p>
+    <div class="exit-modal-btns">
+      <button id="exit-cancel-btn"  class="btn btn-exit-stay">Lanjut Main</button>
+      <button id="exit-confirm-btn" class="btn btn-exit-quit">Ya, Keluar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+  SCRIPTS
+  ============================================================ -->
+<script src="questions.js"></script>
+<script src="script.js"></script>
+
+<script>
+  // Patch: update ronde di header setiap giliran berubah
+  const _origNextPlayer = TurnManager.nextPlayer.bind(TurnManager);
+  TurnManager.nextPlayer = function() {
+    _origNextPlayer();
+    const el = document.getElementById('turn-counter');
+    if (el) el.textContent = 'Ronde ' + GameState.turnNumber;
+  };
+
+  // aria-pressed untuk tombol jumlah pemain
+  document.querySelectorAll('.player-count-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.player-count-btn').forEach(function(b) {
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  // Tampilkan/sembunyikan field "Jawaban Alternatif" di Bank Soal
+  // berdasarkan tipe soal yang dipilih
+  var aqType = document.getElementById('aq-type');
+  var aqAcceptedGroup = document.getElementById('aq-accepted-group');
+  function syncAcceptedField() {
+    if (aqType && aqAcceptedGroup) {
+      aqAcceptedGroup.style.display = aqType.value === 'concept-guess' ? '' : 'none';
+    }
+  }
+  if (aqType) {
+    aqType.addEventListener('change', syncAcceptedField);
+    syncAcceptedField(); // jalankan sekali saat load
+  }
+</script>
+
+<!-- ============================================================
+  PANEL DEBUG — hanya muncul jika URL mengandung ?debug=1
+  DebugManager.init() akan menampilkan panel ini saat game dimulai
+  ============================================================ -->
+<aside id="debug-panel" role="complementary" aria-label="Panel Debug Guru" style="display:none;">
+  <div class="dbg-titlebar">
+    <span class="dbg-title">🛠 DEBUG</span>
+    <button id="dbg-toggle" class="dbg-toggle-btn" aria-expanded="true" title="Lipat/buka panel">▼</button>
+  </div>
+
+  <div id="dbg-body">
+
+    <!-- ── Pindah petak ── -->
+    <div class="dbg-section">
+      <label class="dbg-label">Pindah Pemain</label>
+      <select id="dbg-player-sel" class="dbg-select" aria-label="Pilih pemain">
+        <!-- diisi oleh DebugManager.refreshPlayerDropdown() -->
+      </select>
+      <div class="dbg-row">
+        <input id="dbg-cell-input" class="dbg-input" type="number" min="1" max="64"
+               value="60" aria-label="Nomor petak tujuan" />
+        <button id="dbg-move-btn" class="dbg-btn">Pindahkan</button>
+      </div>
+      <button id="dbg-near-finish-btn" class="dbg-btn dbg-btn-wide">⚡ Dekatkan ke Finish (60)</button>
+    </div>
+
+    <!-- ── Paksa dadu ── -->
+    <div class="dbg-section">
+      <label class="dbg-label" for="dbg-dice-sel">Dadu Berikutnya</label>
+      <select id="dbg-dice-sel" class="dbg-select" aria-label="Pilih nilai dadu">
+        <option value="0">🎲 Acak (default)</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+
+    <!-- ── Auto benar ── -->
+    <div class="dbg-section dbg-row dbg-check-row">
+      <input id="dbg-auto-correct" class="dbg-checkbox" type="checkbox" />
+      <label for="dbg-auto-correct" class="dbg-label dbg-label-inline">Soal otomatis benar</label>
+    </div>
+
+    <!-- ── Beri power-up ── -->
+    <div class="dbg-section">
+      <label class="dbg-label">Beri Power-Up</label>
+      <select id="dbg-pu-sel" class="dbg-select" aria-label="Pilih power-up">
+        <!-- diisi oleh DebugManager.init() dari POWERUP_CONFIG -->
+      </select>
+      <button id="dbg-give-pu-btn" class="dbg-btn dbg-btn-wide">+ Beri ke Pemain</button>
+    </div>
+
+  </div><!-- /#dbg-body -->
+</aside>
+
+
+</body>
+</html>
